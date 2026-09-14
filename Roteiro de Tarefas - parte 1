@@ -1,0 +1,26 @@
+# Coordenada média de todos os imóveis
+lat_media = df_mapa['latitude'].mean()
+lon_media = df_mapa['longitude'].mean()
+
+# Criação do mapa base
+mapa_basico = folium.Map(
+    location=[lat_media, lon_media],
+    zoom_start=12,
+    tiles='OpenStreetMap'
+)
+
+mapa_basico
+______________________________________________________________________________________________________________________________
+# Iterar sobre as 5 primeiras linhas
+for _, row in df_mapa.head(5).iterrows():
+    popup_texto = f"<b>Tipo:</b> {row['tipo']}<br><b>Valor:</b> R$ {row['valor_venda']:,.2f}"
+    
+    folium.Marker(
+        location=[row['latitude'], row['longitude']],
+        popup=folium.Popup(popup_texto, max_width=200),
+        tooltip=f"Imóvel #{row['id_imovel']} - {row['cidade']}",
+        icon=folium.Icon(color='blue', icon='home', prefix='fa')
+    ).add_to(mapa_basico)
+
+mapa_basico
+______________________________________________________________________________________________________________________________
