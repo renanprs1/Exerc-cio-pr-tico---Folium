@@ -1,0 +1,27 @@
+# Dicionário de cores por cidade
+cores_cidade = {
+    'Nova Iguaçu': 'blue',
+    'Queimados': 'orange'
+}
+
+# Iterar sobre TODOS os imóveis
+for _, row in df_mapa.iterrows():
+    popup_texto = (
+        f"<b>ID:</b> {row['id_imovel']}<br>"
+        f"<b>Cidade:</b> {row['cidade']}<br>"
+        f"<b>Tipo:</b> {row['tipo']}<br>"
+        f"<b>Valor:</b> R$ {row['valor_venda']:,.2f}"
+    )
+    
+    folium.CircleMarker(
+        location=[row['latitude'], row['longitude']],
+        radius=8,                                    # Raio fixo em 8 pixels
+        color=cores_cidade[row['cidade']],           # Borda também colorida
+        fill=True,
+        fill_color=cores_cidade[row['cidade']],      # Azul NI / Laranja QD
+        fill_opacity=0.7,
+        tooltip='Clique para detalhes',              # Tooltip exigido
+        popup=folium.Popup(popup_texto, max_width=220)
+    ).add_to(mapa_circulos)
+
+mapa_circulos
