@@ -1,0 +1,55 @@
+# Terceiro mapa base
+mapa_cluster = folium.Map(
+    location=[lat_media, lon_media],
+    zoom_start=12,
+    tiles='OpenStreetMap'
+)
+
+# Instanciando o cluster
+marker_cluster = MarkerCluster(name='Imóveis').add_to(mapa_cluster)
+
+# Mapeamento de cor por tipo de imóvel
+cores_tipo = {
+    'Casa': 'green',
+    'Apartamento': 'blue',
+    'Terreno': 'gray'
+}
+
+# Mapeamento de ícone por tipo (prefix='fa' do Font Awesome)
+icones_tipo = {
+    'Casa': 'home',
+    'Apartamento': 'building',
+    'Terreno': 'square'
+}
+
+# Adicionar TODOS os imóveis ao cluster
+for _, row in df_mapa.iterrows():
+    popup_texto = (
+        f"<div style='font-family:Arial; font-size:12px;'>"
+        f"<b>ID:</b> {row['id_imovel']}<br>"
+        f"<b>Cidade:</b> {row['cidade']}<br>"
+        f"<b>Tipo:</b> {row['tipo']}<br>"
+        f"<b>Valor:</b> R$ {row['valor_venda']:,.2f}"
+        f"</div>"
+    )
+    
+    folium.Marker(
+        location=[row['latitude'], row['longitude']],
+        popup=folium.Popup(popup_texto, max_width=250),
+        tooltip=f"{row['tipo']} em {row['cidade']}",
+        icon=folium.Icon(
+            color=cores_tipo[row['tipo']],     # Verde / Azul / Cinza
+            icon=icones_tipo[row['tipo']],
+            prefix='fa'
+        )
+    ).add_to(marker_cluster)
+
+# Controle de camadas (opcional, mas útil)
+folium.LayerControl().add_to(mapa_cluster)
+
+# Salvando o mapa final
+mapa_cluster.save('mapa_imoveis_baixada.html')
+print("✅ Mapa salvo com sucesso em: mapa_imoveis_baixada.html")
+
+# Exibir no notebook
+mapa_cluster
